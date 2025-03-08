@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "JSON Viewer",
+  "version": "1.0.0",
+  "description": "JSON Viewer is a simple React app as a Chrome extension",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": ["storage"]
+}
