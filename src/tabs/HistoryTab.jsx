@@ -17,8 +17,8 @@ import {
     saveHistory,
 } from "../utils/chromeStorage";
 import { globalUIConfig as UI } from "../constants";
-import TabContext from "./TabContext";
-import EditorViewerContext from "./EditorViewerContext";
+import TabContext from "./contexts/TabContext";
+import EditorViewerContext from "./contexts/EditorViewerContext";
 import HandleDialog from "./DialogHandler";
 
 const HistoryTab = () => {
@@ -41,8 +41,9 @@ const HistoryTab = () => {
         setTabIndex(0);
     };
 
-    const deleteHistoryItem = (id) => {
-        const newHistory = deleteHistory(id);
+    const deleteHistoryItem = async (id) => {
+        const newHistory = await deleteHistory(id);
+        setHistory(newHistory);
         saveHistory(newHistory);
     };
 

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import EditorViewerContext from "./EditorViewerContext";
+import EditorViewerContext from "./contexts/EditorViewerContext";
 import { vscodeTheme } from "@uiw/react-json-view/vscode";
 import JsonView from "@uiw/react-json-view";
 import { Alert, Box } from "@mui/material";

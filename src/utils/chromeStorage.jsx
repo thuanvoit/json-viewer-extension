@@ -13,11 +13,37 @@ const setChromeLocal = async (data) => {
 const getChromeLocal = async (key) => {
     try {
         // eslint-disable-next-line no-undef
-        return await chrome.storage.local.get(key);
+        const data = await chrome.storage.local.get(key);
+        return data;
     } catch (error) {
         console.error("Error getting data:", error);
     }
     return null;
+};
+
+const setStorage = async (data) => {
+    // eslint-disable-next-line no-undef
+    if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+        // dev code, use local storage
+        localStorage.setItem("jvw", JSON.stringify(data));
+    } else {
+        // production code
+        await setChromeLocal({ jvw: JSON.stringify(data) });
+    }
+};
+
+const getStorage = async () => {
+    let data = null;
+    // eslint-disable-next-line no-undef
+    if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+        // dev code, use local storage
+        data = localStorage.getItem("jvw");
+    } else {
+        // production code
+        const result = await getChromeLocal("jvw");
+        data = result ? result.jvw : [];
+    }
+    return JSON.parse(data);
 };
 
 const saveHistory = async (jsonValue) => {
@@ -37,17 +63,18 @@ const saveHistory = async (jsonValue) => {
                 ? [newHistory, ...jvwhistory]
                 : [newHistory];
 
-            await setChromeLocal({ jvwhistory: historyToSave });
-            return historyToSave;
+            console.log("History to save:", historyToSave);
+            await setStorage({ jvwhistory: historyToSave });
+        } else {
+            throw new Error("Error saving history");
         }
     } catch (error) {
-        console.error("Error saving history:", error);
+        throw new Error("Error saving history");
     }
-    return null;
 };
 
 const getHistory = async () => {
-    const result = await getChromeLocal("jvwhistory");
+    const result = await getStorage("jvwhistory");
     return result ? result.jvwhistory : [];
 };
 
@@ -55,7 +82,7 @@ const deleteHistory = async (id) => {
     try {
         const jvwhistory = await getHistory();
         const newHistory = jvwhistory.filter((i) => i.id !== id);
-        await setChromeLocal({ jvwhistory: newHistory });
+        await setStorage({ jvwhistory: newHistory });
         return newHistory;
     } catch (error) {
         console.error("Error deleting history:", error);
@@ -65,7 +92,7 @@ const deleteHistory = async (id) => {
 
 const clearHistory = async () => {
     try {
-        await setChromeLocal({ jvwhistory: [] });
+        await setStorage({ jvwhistory: [] });
         return [];
     } catch (error) {
         console.error("Error clearing history:", error);
@@ -74,8 +101,8 @@ const clearHistory = async () => {
 };
 
 export {
-    setChromeLocal,
-    getChromeLocal,
+    setStorage,
+    getStorage,
     saveHistory,
     getHistory,
     deleteHistory,

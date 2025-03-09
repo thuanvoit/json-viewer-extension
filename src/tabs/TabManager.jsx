@@ -6,7 +6,7 @@ import EditorTab from "./EditorTab";
 import TreeViewerTab from "./TreeViewerTab";
 import HistoryTab from "./HistoryTab";
 import ConfigTab from "./ConfigTab";
-import TabContext from "./TabContext";
+import TabContext from "./contexts/TabContext";
 
 const CustomTabPanel = (props) => {
     const { children, value, index, ...other } = props;
@@ -50,14 +50,15 @@ const TabManager = () => {
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <Tabs
                     value={tabIndex}
-                    variant="fullWidth"
+                    // variant="fullWidth"
                     onChange={handleChange}
                     aria-label="tabs"
+                    centered
                 >
                     <Tab label="Editor" {...a11yProps(0)} />
                     <Tab label="Viewer" {...a11yProps(1)} />
                     <Tab label="History" {...a11yProps(2)} />
-                    <Tab icon={<Settings />} {...a11yProps(3)} />
+                    {/* <Tab icon={<Settings />} {...a11yProps(3)} /> */}
                 </Tabs>
             </Box>
             <CustomTabPanel value={tabIndex} index={0}>
@@ -69,9 +70,9 @@ const TabManager = () => {
             <CustomTabPanel value={tabIndex} index={2}>
                 <HistoryTab />
             </CustomTabPanel>
-            <CustomTabPanel value={tabIndex} index={3}>
+            {/* <CustomTabPanel value={tabIndex} index={3}>
                 <ConfigTab />
-            </CustomTabPanel>
+            </CustomTabPanel> */}
         </Box>
     );
 };

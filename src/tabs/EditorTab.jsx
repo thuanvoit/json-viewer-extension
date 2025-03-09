@@ -1,8 +1,11 @@
 import { useContext, useState } from "react";
-import EditorViewerContext from "./EditorViewerContext";
+import EditorViewerContext from "./contexts/EditorViewerContext";
 import { json } from "@codemirror/lang-json";
 import CodeMirror from "@uiw/react-codemirror";
+
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
+import { githubDark } from "@uiw/codemirror-theme-github";
+
 import {
     Button,
     IconButton,
@@ -68,9 +71,13 @@ const EditorTab = () => {
         toast("Wow so easy!");
     };
 
-    const handleSave = () => {
-        saveHistory(jsonValue);
-        toast("History saved!");
+    const handleSave = async () => {
+        try {
+            await saveHistory(jsonValue);
+            toast("History saved!");
+        } catch (error) {
+            toast.error("Error saving history!");
+        }
     };
 
     const handleClear = () => {
@@ -108,6 +115,24 @@ const EditorTab = () => {
                 >
                     Copy
                 </Button>
+                <Button
+                    variant="contained"
+                    size="small"
+                    startIcon={<Save />}
+                    onClick={handleSave}
+                    color="info"
+                >
+                    Save
+                </Button>
+                <Button
+                    variant="contained"
+                    color="error"
+                    size="small"
+                    startIcon={<Clear />}
+                    onClick={() => setClearDialogOpen(true)}
+                >
+                    Clear
+                </Button>
                 <IconButton
                     aria-label="more"
                     variant="contained"
@@ -120,6 +145,16 @@ const EditorTab = () => {
                 >
                     <MoreVert />
                 </IconButton>
+
+                <HandleDialog
+                    open={clearDialogOpen}
+                    title={"Clear Editor"}
+                    content={"Are you sure you want to clear the editor?"}
+                    actionCancel={() => setClearDialogOpen(false)}
+                    actionOk={handleClear}
+                    actionCancelText={"Cancel"}
+                    actionOkText={"Clear"}
+                />
 
                 <Menu
                     id="basic-menu"
@@ -136,28 +171,18 @@ const EditorTab = () => {
                         </ListItemIcon>
                         <ListItemText>Minify</ListItemText>
                     </MenuItem>
-                    <MenuItem onClick={() => setClearDialogOpen(true)}>
+                    {/* <MenuItem onClick={() => setClearDialogOpen(true)}>
                         <ListItemIcon>
                             <Clear fontSize="small" />
                         </ListItemIcon>
                         <ListItemText>Clear</ListItemText>
-                    </MenuItem>
-                    <MenuItem onClick={handleSave}>
+                    </MenuItem> */}
+                    {/* <MenuItem onClick={handleSave}>
                         <ListItemIcon>
                             <Save fontSize="small" />
                         </ListItemIcon>
                         <ListItemText>Save</ListItemText>
-                    </MenuItem>
-
-                    <HandleDialog
-                        open={clearDialogOpen}
-                        title={"Clear Editor"}
-                        content={"Are you sure you want to clear the editor?"}
-                        actionCancel={() => setClearDialogOpen(false)}
-                        actionOk={handleClear}
-                        actionCancelText={"Cancel"}
-                        actionOkText={"Clear"}
-                    />
+                    </MenuItem> */}
                 </Menu>
             </Stack>
         </Stack>
